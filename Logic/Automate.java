@@ -22,13 +22,7 @@ public class Automate {
 
 
     public boolean recognize(ArrayList<String> language){
-        int numberOfWordRecongnized = 0;
-        for (String word : language) {
-            if (recognizeWord(word)){
-                numberOfWordRecongnized++;
-            }
-        }
-        return numberOfWordRecongnized == language.size();
+        return language.contains("") && language.size() == 1 ? true : language.stream().allMatch(this::recognizeWord);
     }
 
     public boolean validateAutomate(){
