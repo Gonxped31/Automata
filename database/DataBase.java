@@ -4,13 +4,16 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
+import java.util.Map;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 
 import logic.Automate;
 
 public class DataBase {
 
-    private static Connection connect() {
+    public static Connection connect() {
         // SQLite connection string  
         String url = "jdbc:sqlite:C:/Users/Samir/Documents/GitHub/Automate/database/automates.db";
         Connection connection = null;  
@@ -55,7 +58,7 @@ public class DataBase {
             
             PreparedStatement pstmt = connection.prepareStatement(saveAutomateSql.toString());
             pstmt.setString(1, automName);
-            pstmt.setString(2, new StringBuilder().append(automate.getQ_0()).toString());
+            pstmt.setString(2, new StringBuilder().append(automate.getQ()).toString());
             pstmt.setString(3, new StringBuilder().append(automate.getSigma()).toString());
             pstmt.setString(4, new StringBuilder().append(automate.getDelta()).toString());
             pstmt.setString(5, automate.getQ_0());
@@ -70,8 +73,65 @@ public class DataBase {
         }
     }
 
-    /*private static void removeAutomate(String automName){
+    public static boolean removeAutomate(String automName){
         Connection connection = connect();
-    }*/
+
+        try {
+            StringBuilder sql = new StringBuilder();
+            sql.append("DELETE FROM automates_table WHERE id = ?");
+
+            PreparedStatement pstmt = connection.prepareStatement(sql.toString());
+            pstmt.setString(1, automName);
+            pstmt.executeUpdate();
+
+            System.out.println("Automate " + automName +  " deleted successfully.");
+            return true;
+
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+            return false;
+        }
+
+    }
+
+    public static ArrayList<ArrayList<String>> getAutomates(){
+        Connection connection = connect();
+        ArrayList<ArrayList<String>> result = new ArrayList<>();
+        ArrayList<String> names = new ArrayList<>();
+        ArrayList<String> states = new ArrayList<>();
+        ArrayList<String> alphabet = new ArrayList<>();
+        ArrayList<String> transitions = new ArrayList<>();
+        ArrayList<String> startingState = new ArrayList<>();
+        ArrayList<String> endingStates = new ArrayList<>();
+
+        result.add(names);
+        result.add(states);
+        result.add(alphabet);
+        result.add(transitions);
+        result.add(startingState);
+        result.add(endingStates);
+
+        StringBuilder sql = new StringBuilder();
+        sql.append("SELECT * FROM automates_table ");
+
+        try {
+            Statement stmt = connection.createStatement();
+            ResultSet rSet = stmt.executeQuery(sql.toString());
+
+            while (rSet.next()) {
+                names.add(rSet.getString("id"));
+                states.add(rSet.getString("states"));
+                alphabet.add(rSet.getString("alphabet"));
+                transitions.add(rSet.getString("transitions"));
+                startingState.add(rSet.getString("starting_state"));
+                endingStates.add(rSet.getString("ending_states"));
+            }
+
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+        }
+
+        return result;
+    }
 
 }

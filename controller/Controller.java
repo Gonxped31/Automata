@@ -23,4 +23,12 @@ public class Controller {
         Automate automate = new Automate(states, alphabet, functions, startingState, endingStates);
         return DataBase.saveAutomate(automateName, automate);
     }
+
+    public static boolean deleteAutomate(String automateName){
+        return DataBase.removeAutomate(automateName);
+    }
+
+    public static ArrayList<ArrayList<String>> getAutomatesNames(){
+        return DataBase.getAutomates();
+    }
 }

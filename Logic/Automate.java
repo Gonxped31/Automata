@@ -22,7 +22,7 @@ public class Automate {
 
 
     public boolean recognize(ArrayList<String> language){
-        return language.contains("") && language.size() == 1 ? true : language.stream().allMatch(this::recognizeWord);
+        return language.stream().allMatch(this::recognizeWord);
     }
 
     public boolean validateAutomate(){

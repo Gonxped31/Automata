@@ -105,10 +105,10 @@ public class AutomateTest {
         
         Automate automate = new Automate(states, alphabet, transitions, startingState, endingStates);
 
-        ArrayList<String> validLanguage = new ArrayList<>();
-        validLanguage.add(""); // Empty string should be recognized in an empty automaton.
+        ArrayList<String> language = new ArrayList<>();
+        language.add("");
         
-        assertTrue(automate.recognize(validLanguage));
+        assertFalse(automate.recognize(language));
     }
 
     @Test
