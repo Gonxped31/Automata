@@ -1,11 +1,16 @@
 package database;
 
+import java.io.File;
+import java.net.URISyntaxException;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.Map;
+
+import UI.AutomatonInputGUI;
+
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 
@@ -14,17 +19,19 @@ import logic.Automate;
 public class DataBase {
 
     public static Connection connect() {
-        // SQLite connection string  
-        String url = "jdbc:sqlite:C:/Users/Samir/Documents/GitHub/Automate/database/automates.db";
+        // Construct the full URL based on the application's location
+
         Connection connection = null;  
-        try {  
+        try {
+            String jarPath = new File(AutomatonInputGUI.class.getProtectionDomain().getCodeSource().getLocation().toURI()).getParent();
+            String url = "jdbc:sqlite:" + jarPath + File.separator + "automates.db";
             connection = DriverManager.getConnection(url);  
             System.out.println("Connection to SQLite has been established.");
-        } catch (SQLException e) {  
+        } catch (SQLException | URISyntaxException e) {  
             System.out.println(e.getMessage());  
-        }  
+        }
         return connection;  
-    }  
+    }
 
     public static boolean saveAutomate(String automName, Automate automate){
         

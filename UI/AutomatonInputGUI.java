@@ -123,21 +123,24 @@ public class AutomatonInputGUI {
 
         displayAutomatesCreatedButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e){
-                StringBuilder automates = new StringBuilder();
-                automates.append("YOUR AUTOMATES: ").append("\n");
                 ArrayList<ArrayList<String>> list = Controller.getAutomatesNames();
-                
-                for (int i = 0; i < list.get(0).size(); i++) {
-                    automates .append("**Automate-" + i + "**").append("\n")
-                        .append("Name: ").append(list.get(0).get(i)).append("\n")
-                        .append("States: ").append(list.get(1).get(i)).append("\n")
-                        .append("Alphabet: ").append(list.get(2).get(i)).append("\n")
-                        .append("Transitions: ").append(list.get(3).get(i)).append("\n")
-                        .append("Initial state: ").append(list.get(4).get(i)).append("\n")
-                        .append("Ending states: ").append(list.get(5).get(i)).append("\n\n");
-                }
+                if (list.get(0).isEmpty()) {
+                    JOptionPane.showMessageDialog(frame, "You did not save any automate.");
+                } else {
+                    StringBuilder automates = new StringBuilder();
+                    automates.append("YOUR AUTOMATES: ").append("\n");
+                    for (int i = 0; i < list.get(0).size(); i++) {
+                        automates .append("**Automate-" + i + "**").append("\n")
+                            .append("Name: ").append(list.get(0).get(i)).append("\n")
+                            .append("States: ").append(list.get(1).get(i)).append("\n")
+                            .append("Alphabet: ").append(list.get(2).get(i)).append("\n")
+                            .append("Transitions: ").append(list.get(3).get(i)).append("\n")
+                            .append("Initial state: ").append(list.get(4).get(i)).append("\n")
+                            .append("Ending states: ").append(list.get(5).get(i)).append("\n\n");
+                    }
 
-                JOptionPane.showMessageDialog(frame, automates.toString());
+                    JOptionPane.showMessageDialog(frame, automates.toString());
+                }
             }
         });
 
