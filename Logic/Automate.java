@@ -1,4 +1,4 @@
-package Logic;
+package logic;
 import java.util.ArrayList;
 import java.util.Map;
 
@@ -61,4 +61,23 @@ public class Automate {
         }   
 
     }
+
+    public ArrayList<String> getQ(){
+        return Q;
+    }
+    public ArrayList<String> getSigma(){
+        return sigma;
+    }
+    public Map<String, Map<String, String>> getDelta(){
+        return delta;
+    }
+    public String getQ_0(){
+        return q_0;
+    }
+    public ArrayList<String> getF(){
+        return F;
+    }
+
+    
+
 }

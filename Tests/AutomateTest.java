@@ -1,6 +1,7 @@
-package Tests;
-import Logic.Automate;
+package tests;
 import org.junit.jupiter.api.Test;
+
+import logic.Automate;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
