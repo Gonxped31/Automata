@@ -2,7 +2,7 @@ package logic;
 import java.util.ArrayList;
 import java.util.Map;
 
-public class Automate {
+public class Automaton {
     
     private ArrayList<String> Q;
     private ArrayList<String> sigma;
@@ -10,8 +10,8 @@ public class Automate {
     private String q_0;
     private ArrayList<String> F;
 
-    public Automate(ArrayList<String> states, ArrayList<String> alphabet, 
-        Map<String, Map<String, String>> functions, String startingState, ArrayList<String> endingStates) {
+    public Automaton(ArrayList<String> states, ArrayList<String> alphabet,
+                     Map<String, Map<String, String>> functions, String startingState, ArrayList<String> endingStates) {
 
         this.Q = states;
         this.sigma = alphabet;
@@ -23,10 +23,6 @@ public class Automate {
 
     public boolean recognize(ArrayList<String> language){
         return language.stream().allMatch(this::recognizeWord);
-    }
-
-    public boolean validateAutomate(){
-        return !delta.isEmpty() || Q.containsAll(F) || Q.contains(q_0);
     }
 
     private boolean recognizeWord(String word){

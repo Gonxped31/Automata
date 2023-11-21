@@ -13,7 +13,7 @@ import UI.AutomatonInputGUI;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 
-import logic.Automate;
+import logic.Automaton;
 
 public class DataBase {
 
@@ -49,7 +49,7 @@ public class DataBase {
         return connection;
     }
 
-    public static String saveAutomate(String automName, Automate automate){
+    public static String saveAutomate(String automName, Automaton automaton){
         
         // Table colums SQL statement
         StringBuilder createTableSql = new StringBuilder();
@@ -85,11 +85,11 @@ public class DataBase {
             } else {
                 PreparedStatement pstmt = connection.prepareStatement(saveAutomateSql.toString());
                 pstmt.setString(1, automName);
-                pstmt.setString(2, new StringBuilder().append(automate.getQ()).toString());
-                pstmt.setString(3, new StringBuilder().append(automate.getSigma()).toString());
-                pstmt.setString(4, new StringBuilder().append(automate.getDelta()).toString());
-                pstmt.setString(5, automate.getQ_0());
-                pstmt.setString(6, new StringBuilder().append(automate.getF()).toString());
+                pstmt.setString(2, new StringBuilder().append(automaton.getQ()).toString());
+                pstmt.setString(3, new StringBuilder().append(automaton.getSigma()).toString());
+                pstmt.setString(4, new StringBuilder().append(automaton.getDelta()).toString());
+                pstmt.setString(5, automaton.getQ_0());
+                pstmt.setString(6, new StringBuilder().append(automaton.getF()).toString());
                 pstmt.executeUpdate();
                 System.out.println("Automaton saved successfully.");
                 return "Automaton saved successfully.";
