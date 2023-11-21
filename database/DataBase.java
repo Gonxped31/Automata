@@ -7,7 +7,6 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
-import java.util.Map;
 
 import UI.AutomatonInputGUI;
 
@@ -18,26 +17,43 @@ import logic.Automate;
 
 public class DataBase {
 
-    public static Connection connect() {
-        // Construct the full URL based on the application's location
+    private static String tableName = "automates_table";
 
-        Connection connection = null;  
+    public static Connection connect() {
+        Connection connection = null;
         try {
             String jarPath = new File(AutomatonInputGUI.class.getProtectionDomain().getCodeSource().getLocation().toURI()).getParent();
-            String url = "jdbc:sqlite:" + jarPath + File.separator + "automates.db";
-            connection = DriverManager.getConnection(url);  
+            String dbFilePath = jarPath + File.separator + "automates.db";
+            // Check if the database file exists
+            File dbFile = new File(dbFilePath);
+            if (!dbFile.exists()) {
+                System.out.println("Database file does not exist. Creating a new database.");
+
+                // Create a new database file (empty) if it doesn't exist
+                if (dbFile.createNewFile()) {
+                    System.out.println("Database file created successfully.");
+                } else {
+                    System.out.println("Failed to create the database file.");
+                }
+            }
+
+            // JDBC URL for connecting to the SQLite database
+            String url = "jdbc:sqlite:" + dbFilePath;
+            connection = DriverManager.getConnection(url);
             System.out.println("Connection to SQLite has been established.");
-        } catch (SQLException | URISyntaxException e) {  
-            System.out.println(e.getMessage());  
+        } catch (SQLException | URISyntaxException e) {
+            System.out.println(e.getMessage());
+        } catch (Exception e) {
+            e.printStackTrace();
         }
-        return connection;  
+        return connection;
     }
 
-    public static boolean saveAutomate(String automName, Automate automate){
+    public static String saveAutomate(String automName, Automate automate){
         
         // Table colums SQL statement
-        StringBuilder creaateTableSql = new StringBuilder();
-        creaateTableSql.append("CREATE TABLE IF NOT EXISTS automates_table (")
+        StringBuilder createTableSql = new StringBuilder();
+        createTableSql.append("CREATE TABLE IF NOT EXISTS ").append(tableName).append(" (")
             .append("id TEXT, ")
             .append("states TEXT, ")
             .append("alphabet TEXT, ")
@@ -48,7 +64,7 @@ public class DataBase {
 
         // Insert elements SQL statement
         StringBuilder saveAutomateSql = new StringBuilder();
-        saveAutomateSql.append("INSERT INTO automates_table (")
+        saveAutomateSql.append("INSERT INTO ").append(tableName).append("(")
             .append("id, ").append("states, ").append("alphabet, ").append("transitions, ")
             .append("starting_state, ").append("ending_states").append(") ")
             .append("VALUES (?,?,?,?,?,?)");
@@ -58,45 +74,78 @@ public class DataBase {
 
             Connection connection = connect();
 
+            
             // Create a table if there is no table yet
             Statement stmt = connection.createStatement();
-            stmt.execute(creaateTableSql.toString());
+            stmt.execute(createTableSql.toString());
             System.out.println("Table created succesfully.");
-            
-            PreparedStatement pstmt = connection.prepareStatement(saveAutomateSql.toString());
-            pstmt.setString(1, automName);
-            pstmt.setString(2, new StringBuilder().append(automate.getQ()).toString());
-            pstmt.setString(3, new StringBuilder().append(automate.getSigma()).toString());
-            pstmt.setString(4, new StringBuilder().append(automate.getDelta()).toString());
-            pstmt.setString(5, automate.getQ_0());
-            pstmt.setString(6, new StringBuilder().append(automate.getF()).toString());
-            pstmt.executeUpdate();
-            System.out.println("Automate saved successfully.");
-            return true;
+
+            if (verifyAutomatonExistence(automName)) {
+                return "Error: This automaton already exists";
+            } else {
+                PreparedStatement pstmt = connection.prepareStatement(saveAutomateSql.toString());
+                pstmt.setString(1, automName);
+                pstmt.setString(2, new StringBuilder().append(automate.getQ()).toString());
+                pstmt.setString(3, new StringBuilder().append(automate.getSigma()).toString());
+                pstmt.setString(4, new StringBuilder().append(automate.getDelta()).toString());
+                pstmt.setString(5, automate.getQ_0());
+                pstmt.setString(6, new StringBuilder().append(automate.getF()).toString());
+                pstmt.executeUpdate();
+                System.out.println("Automaton saved successfully.");
+                return "Automaton saved successfully.";
+            }
 
         } catch (SQLException e) {
             System.out.println(e.getMessage());
-            return false;
+            return "Error while saving data.";
         }
     }
 
-    public static boolean removeAutomate(String automName){
+    private static boolean verifyAutomatonExistence(String automatonName){
         Connection connection = connect();
 
         try {
             StringBuilder sql = new StringBuilder();
-            sql.append("DELETE FROM automates_table WHERE id = ?");
+            sql.append("SELECT * FROM ").append(tableName).append(" WHERE id = ?");
 
             PreparedStatement pstmt = connection.prepareStatement(sql.toString());
-            pstmt.setString(1, automName);
-            pstmt.executeUpdate();
+            pstmt.setString(1, automatonName);
+            ResultSet rSet = pstmt.executeQuery();
 
-            System.out.println("Automate " + automName +  " deleted successfully.");
-            return true;
+            ArrayList<String> id = new ArrayList<>();
+
+            while (rSet.next()) {
+                id.add(rSet.getString("id"));
+            }
+            return id.size() == 1;
 
         } catch (SQLException e) {
-            System.out.println(e.getMessage());
+           e.printStackTrace();
             return false;
+        }
+    }
+
+    public static String removeAutomate(String automName){
+        Connection connection = connect();
+
+        try {
+            if (verifyAutomatonExistence(automName)){
+                StringBuilder sql = new StringBuilder();
+                sql.append("DELETE FROM ").append(tableName).append(" WHERE id = ?");
+
+                PreparedStatement pstmt = connection.prepareStatement(sql.toString());
+                pstmt.setString(1, automName);
+                pstmt.executeUpdate();
+
+                System.out.println("Automaton " + automName +  " deleted successfully.");
+                return "Automaton deleted successfully.";
+            } else {
+                System.out.println("Automaton " + automName +  " doesn't exist");
+                return "Automaton " + automName +  " doesn't exist";
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return "Error while checking data.";
         }
 
     }
@@ -119,7 +168,7 @@ public class DataBase {
         result.add(endingStates);
 
         StringBuilder sql = new StringBuilder();
-        sql.append("SELECT * FROM automates_table ");
+        sql.append("SELECT * FROM ").append(tableName);
 
         try {
             Statement stmt = connection.createStatement();

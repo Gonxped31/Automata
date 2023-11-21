@@ -2,7 +2,6 @@ package UI;
 
 import javax.swing.*;
 
-import logic.Automate;
 import controller.Controller;
 
 import java.awt.*;
@@ -40,8 +39,6 @@ public class AutomatonInputGUI {
         JTextField endingStatesField = new JTextField();
         JLabel languageLabel = new JLabel("Language (comma-separated):");
         JTextField languageField = new JTextField();
-        JLabel automateNameLabel = new JLabel("Automate name:");
-        JTextField automateNameField = new JTextField();
 
         // Buttons
         JButton submitButton = new JButton("Submit");
@@ -49,6 +46,7 @@ public class AutomatonInputGUI {
         JButton saveButton = new JButton("Save Automate");
         JButton deleButton = new JButton("Delete Automate");
         JButton displayAutomatesCreatedButton = new JButton("My automates");
+        JButton exampleButton = new JButton("Example");
 
         submitButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
@@ -63,61 +61,88 @@ public class AutomatonInputGUI {
                 } else {
                     transitions = new HashMap<>();
                 }
-                startingState = initialStateField.getText();
-                endingStates = new ArrayList<>(Arrays.asList(endingStatesField.getText().split(",")));
+                String[] validateStartingState = initialStateField.getText().split(",");
+                if (validateStartingState.length > 1 || validateStartingState.length == 0 || states.isEmpty() || alphabet.isEmpty() || transitions.isEmpty()){
+                    JOptionPane.showMessageDialog(frame, "Your inputs are invalide.");
+                } else {
+                    startingState = initialStateField.getText();
+                    endingStates = new ArrayList<>(Arrays.asList(endingStatesField.getText().split(",")));
 
-                ArrayList<String> language = new ArrayList<>(Arrays.asList(languageField.getText().split(",")));
+                    ArrayList<String> language = new ArrayList<>(Arrays.asList(languageField.getText().split(",")));
 
-                boolean result = Controller.recognizeAutomate(states, alphabet, transitions, startingState, endingStates, language);
+                    boolean result = Controller.recognizeAutomate(states, alphabet, transitions, startingState, endingStates, language);
 
-                // Display a message or process the automaton input as needed
-                String message = result ? "L'automate reconnait ce language" : "L'automate ne reconnait pas ce language";
+                    // Display a message or process the automaton input as needed
+                    String message = result ? "The automaton recongnize the language" : "The automaton doesn't recognize the language";
 
-                JOptionPane.showMessageDialog(frame, message);
+                    JOptionPane.showMessageDialog(frame, message);
 
-                // Clear the text fields
-                /*statesField.setText("");
-                alphabetField.setText("");
-                transitionsField.setText("");
-                initialStateField.setText("");
-                endingStatesField.setText("");
-                languageField.setText("");*/
+                    // Clear the text fields
+                    /*statesField.setText("");
+                    alphabetField.setText("");
+                    transitionsField.setText("");
+                    initialStateField.setText("");
+                    endingStatesField.setText("");
+                    languageField.setText("");*/                    
+                }
             }
         });
 
         exitButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                // Define the action to exit the application
                 System.exit(0);
             }
         });
 
         saveButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e){
-                // Parse input and populate the automaton properties
-                states = new ArrayList<>(Arrays.asList(statesField.getText().split(",")));
-                alphabet = new ArrayList<>(Arrays.asList(alphabetField.getText().split(",")));
-                String[] transitionsArray = transitionsField.getText().split(",");
-                for (int i = 0; i < transitionsArray.length; i += 3) {
-                    transitions.computeIfAbsent(transitionsArray[i], k -> new HashMap<>()).put(transitionsArray[i + 1], transitionsArray[i + 2]);
+
+                try {
+                    String automatonName = JOptionPane.showInputDialog("Automaton name:");
+                    // Parse input and populate the automaton properties
+                    states = new ArrayList<>(Arrays.asList(statesField.getText().split(",")));
+                    alphabet = new ArrayList<>(Arrays.asList(alphabetField.getText().split(",")));
+                    String[] transitionsArray = transitionsField.getText().split(",");
+                    if (transitionsArray.length >= 3) {
+                        for (int i = 0; i < transitionsArray.length; i += 3) {
+                            transitions.computeIfAbsent(transitionsArray[i], k -> new HashMap<>()).put(transitionsArray[i + 1], transitionsArray[i + 2]);
+                        }
+                    }
+                    startingState = initialStateField.getText();
+                    endingStates = new ArrayList<>(Arrays.asList(endingStatesField.getText().split(",")));
+                    if (automatonName != null) {
+                        if (automatonName.equals("")) {
+                            JOptionPane.showMessageDialog(frame, "Error: Invalid Name", "Error", JOptionPane.ERROR_MESSAGE);
+                        } else {
+                            String confirmationMessage = "Are you sure ?";
+                            int userChoice = JOptionPane.showConfirmDialog(frame, confirmationMessage);
+
+                            if (userChoice == JOptionPane.YES_OPTION) {
+                                String response = Controller.saveAutomate(states, alphabet, transitions, startingState, endingStates, automatonName);
+                                JOptionPane.showMessageDialog(frame, response);
+                            }
+                        }
+                    }
+                } catch (Exception e1) {
+                    e1.printStackTrace();
                 }
-                startingState = initialStateField.getText();
-                endingStates = new ArrayList<>(Arrays.asList(endingStatesField.getText().split(",")));
-                String automateName = automateNameField.getText();
-
-                boolean response = Controller.saveAutomate(states, alphabet, transitions, startingState, endingStates, automateName);
-
-                String message = response ? "Automate saved successfuly!" : "Error occured.";
-                JOptionPane.showMessageDialog(frame, message);
             }
         });
 
         deleButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e){
-                String automateName = automateNameField.getText();
-                boolean response = Controller.deleteAutomate(automateName);
-                String message = response ? "Automate deleted successfully" : "Error durin the process.";
-                JOptionPane.showMessageDialog(frame, message);
+                String automatonName = JOptionPane.showInputDialog("Automaton name:");
+                if (!automatonName.equals("")) {
+                    int userChoice = JOptionPane.showConfirmDialog(frame, "Are you sure ?");
+                    if (userChoice == JOptionPane.YES_OPTION){
+                        String response = Controller.deleteAutomate(automatonName);
+                        JOptionPane.showMessageDialog(frame, response);
+                    } else {
+                        JOptionPane.showMessageDialog(frame, "Operation canceled");
+                    }
+                } else {
+                    JOptionPane.showMessageDialog(frame, "Error: Invalid name", "Error", JOptionPane.ERROR_MESSAGE);
+                }
             }
         });
 
@@ -125,12 +150,11 @@ public class AutomatonInputGUI {
             public void actionPerformed(ActionEvent e){
                 ArrayList<ArrayList<String>> list = Controller.getAutomatesNames();
                 if (list.get(0).isEmpty()) {
-                    JOptionPane.showMessageDialog(frame, "You did not save any automate.");
+                    JOptionPane.showMessageDialog(frame, "You did not save any automaton yet.");
                 } else {
                     StringBuilder automates = new StringBuilder();
-                    automates.append("YOUR AUTOMATES: ").append("\n");
                     for (int i = 0; i < list.get(0).size(); i++) {
-                        automates .append("**Automate-" + i + "**").append("\n")
+                        automates .append("****").append("\n")
                             .append("Name: ").append(list.get(0).get(i)).append("\n")
                             .append("States: ").append(list.get(1).get(i)).append("\n")
                             .append("Alphabet: ").append(list.get(2).get(i)).append("\n")
@@ -139,9 +163,34 @@ public class AutomatonInputGUI {
                             .append("Ending states: ").append(list.get(5).get(i)).append("\n\n");
                     }
 
-                    JOptionPane.showMessageDialog(frame, automates.toString());
+                    JTextArea textArea = new JTextArea(10, 30);
+                    textArea.setText(automates.toString());
+                    JScrollPane scrollPane = new JScrollPane(textArea);
+                    JOptionPane.showMessageDialog(
+                        frame,
+                        scrollPane,
+                        "Your automatons",
+                        JOptionPane.INFORMATION_MESSAGE);
                 }
             }
+        });
+
+        exampleButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e){
+                StringBuilder example = new StringBuilder();
+
+                example.append("** EXAMPLE OF INPUT **").append("\n")  
+                    .append("States:    A,B").append("\n")
+                    .append("Alphabet:    a,b").append("\n")
+                    .append("Transitions:    A,a,A,A,b,B,B,a,A,B,b,B").append("\n")
+                    .append("Initial State:    A").append("\n")
+                    .append("Accepting States:    B").append("\n")
+                    .append("Language:    abbbab,babbaab").append("\n").append("\n")
+                    .append("Note: For the transitions 'A,b,B' for example, the first letter 'A' represent\nthe state that we are leaving, the letter 'b' represent the condition to go\nto the next state and the letter 'B' represent the arrival state.");
+                
+                JOptionPane.showMessageDialog(frame, example.toString());
+            }
+
         });
 
         // Add components to the frame
@@ -158,12 +207,11 @@ public class AutomatonInputGUI {
         frame.add(languageLabel);
         frame.add(languageField);
         frame.add(submitButton);
-        frame.add(exitButton);
-        frame.add(automateNameLabel);
-        frame.add(automateNameField);
+        frame.add(exampleButton);
         frame.add(saveButton);
         frame.add(deleButton);
         frame.add(displayAutomatesCreatedButton);
+        frame.add(exitButton);
 
         frame.setVisible(true);
     }

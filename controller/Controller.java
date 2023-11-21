@@ -17,14 +17,14 @@ public class Controller {
         return automate.recognize(language);
     }
 
-    public static boolean saveAutomate(ArrayList<String> states, ArrayList<String> alphabet,
+    public static String saveAutomate(ArrayList<String> states, ArrayList<String> alphabet,
      Map<String, Map<String, String>> functions, String startingState, ArrayList<String> endingStates, String automateName){
 
         Automate automate = new Automate(states, alphabet, functions, startingState, endingStates);
         return DataBase.saveAutomate(automateName, automate);
     }
 
-    public static boolean deleteAutomate(String automateName){
+    public static String deleteAutomate(String automateName){
         return DataBase.removeAutomate(automateName);
     }
 

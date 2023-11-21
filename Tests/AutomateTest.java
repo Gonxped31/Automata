@@ -15,6 +15,7 @@ import java.util.Random;
 
 public class AutomateTest {
     
+    // Recognize the word 'mot'
     @Test
     public void testCase1() {
         ArrayList<String> states = new ArrayList<>();
@@ -48,6 +49,7 @@ public class AutomateTest {
         assertTrue(automate.recognize(validLanguage));
     }
 
+    // Recognize any word that contains 'abba' in the defined alphabet
     @Test
     public void testCase2() {
         ArrayList<String> states = new ArrayList<>();
@@ -92,6 +94,50 @@ public class AutomateTest {
         ArrayList<String> inValidLanguage = new ArrayList<>();
         inValidLanguage.add("abbab");
         inValidLanguage.add("babab");
+        assertFalse(automate.recognize(inValidLanguage));
+    }
+
+    // Recognize any word that start with 'a' and end with 'b'
+    @Test
+    public void testCase3() {
+        ArrayList<String> states = new ArrayList<>();
+        states.addAll(Arrays.asList("A", "B", "C"));
+
+        ArrayList<String> alphabet = new ArrayList<>();
+        alphabet.addAll(Arrays.asList("a", "b"));
+
+        Map<String, String> mapA = new HashMap<>();
+        mapA.put("a", "B");
+
+        Map<String, String> mapB = new HashMap<>();
+        mapB.put("a", "B");
+        mapB.put("b", "C");
+
+        Map<String, String> mapC = new HashMap<>();
+        mapC.put("a", "B");
+        mapC.put("b", "C");
+
+        ArrayList<String> endingStates = new ArrayList<>();
+        endingStates.add("C");
+
+        Map<String, Map<String, String>> transitions = new HashMap<>();
+        transitions.put("A", mapA);
+        transitions.put("B", mapB);
+        transitions.put("C", mapC);
+        transitions.put("D", new HashMap<>());
+
+        Automate automate = new Automate(states, alphabet, transitions, "A", endingStates);
+
+        ArrayList<String> validLanguage = new ArrayList<>();
+        validLanguage.add("abbababbbaaabab");
+        validLanguage.add("ab");
+        validLanguage.add("aabbbababbab");
+        assertTrue(automate.recognize(validLanguage));
+
+        ArrayList<String> inValidLanguage = new ArrayList<>();
+        inValidLanguage.add("bbaab");
+        inValidLanguage.add("baba");
+        inValidLanguage.add("ababa");
         assertFalse(automate.recognize(inValidLanguage));
     }
 

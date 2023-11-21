@@ -33,6 +33,7 @@ public class Automate {
         String[] symbols = word.split("");
         int numb = 0;
 
+        // Check if all the symbols are in the alphabet
         for (String symbol : symbols) {
             if (!sigma.contains(symbol)){
                 break;
@@ -77,7 +78,5 @@ public class Automate {
     public ArrayList<String> getF(){
         return F;
     }
-
-    
 
 }
