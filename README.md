@@ -1,2 +1,8 @@
-# Recognize a language with an automate
-Create an automate and verify if the automate recognize or not a language (or a word).
+# App description
+Create an automaton and verify if the automaton recognize or not a language (or a word).
+
+# Imputs description
+
+
+# Download the jar
+Dowload the jar file here : 
