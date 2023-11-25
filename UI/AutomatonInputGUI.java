@@ -43,9 +43,9 @@ public class AutomatonInputGUI {
         // Buttons
         JButton submitButton = new JButton("Submit");
         JButton exitButton = new JButton("Exit");
-        JButton saveButton = new JButton("Save Automate");
-        JButton deleButton = new JButton("Delete Automate");
-        JButton displayAutomatesCreatedButton = new JButton("My automates");
+        JButton saveButton = new JButton("Save Automaton");
+        JButton deleButton = new JButton("Delete Automaton");
+        JButton displayAutomatesCreatedButton = new JButton("My automatons");
         JButton exampleButton = new JButton("Example");
 
         submitButton.addActionListener(new ActionListener() {
