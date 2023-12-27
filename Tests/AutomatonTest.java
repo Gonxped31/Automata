@@ -1,7 +1,7 @@
 package tests;
 import org.junit.jupiter.api.Test;
 
-import logic.Automaton;
+import logic.Automata;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
@@ -42,7 +42,7 @@ public class AutomatonTest {
         transitions.put("C", mapC);
         transitions.put("D", new HashMap<>());
 
-        Automaton automaton = new Automaton(states, alphabet, transitions, "A", endingStates);
+        Automata automaton = new Automata(states, alphabet, transitions, "A", endingStates);
 
         ArrayList<String> validLanguage = new ArrayList<>();
         validLanguage.add("mot");
@@ -84,7 +84,7 @@ public class AutomatonTest {
         transitions.put("D", mapD);
         transitions.put("F", new HashMap<>());
 
-        Automaton automaton = new Automaton(states, alphabet, transitions, "A", endingStates);
+        Automata automaton = new Automata(states, alphabet, transitions, "A", endingStates);
 
         ArrayList<String> validLanguage = new ArrayList<>();
         validLanguage.add("abba");
@@ -126,7 +126,7 @@ public class AutomatonTest {
         transitions.put("C", mapC);
         transitions.put("D", new HashMap<>());
 
-        Automaton automaton = new Automaton(states, alphabet, transitions, "A", endingStates);
+        Automata automaton = new Automata(states, alphabet, transitions, "A", endingStates);
 
         ArrayList<String> validLanguage = new ArrayList<>();
         validLanguage.add("abbababbbaaabab");
@@ -149,7 +149,7 @@ public class AutomatonTest {
         String startingState = "A";
         ArrayList<String> endingStates = new ArrayList<>();
         
-        Automaton automaton = new Automaton(states, alphabet, transitions, startingState, endingStates);
+        Automata automaton = new Automata(states, alphabet, transitions, startingState, endingStates);
 
         ArrayList<String> language = new ArrayList<>();
         language.add("");
@@ -170,7 +170,7 @@ public class AutomatonTest {
         Map<String, Map<String, String>> transitions = new HashMap<>();
         transitions.put("A", mapA);
 
-        Automaton automaton = new Automaton(states, alphabet, transitions, "A", endingStates);
+        Automata automaton = new Automata(states, alphabet, transitions, "A", endingStates);
 
         ArrayList<String> validLanguage = new ArrayList<>(Collections.singletonList("a"));
         ArrayList<String> inValidLanguage = new ArrayList<>(Collections.singletonList("b"));
@@ -193,7 +193,7 @@ public class AutomatonTest {
         transitions.put("A", mapA);
 
         // "C" is not a valid initial state.
-        Automaton automaton = new Automaton(states, alphabet, transitions, "C", endingStates);
+        Automata automaton = new Automata(states, alphabet, transitions, "C", endingStates);
 
         ArrayList<String> validLanguage = new ArrayList<>(Collections.singletonList("a"));
         ArrayList<String> inValidLanguage = new ArrayList<>(Collections.singletonList("b"));
@@ -215,7 +215,7 @@ public class AutomatonTest {
         Map<String, Map<String, String>> transitions = new HashMap<>();
         transitions.put("A", mapA);
     
-        Automaton automaton = new Automaton(states, alphabet, transitions, "A", endingStates);
+        Automata automaton = new Automata(states, alphabet, transitions, "A", endingStates);
     
         ArrayList<String> invalidLanguage = new ArrayList<>(Collections.singletonList("c"));
         
@@ -236,7 +236,7 @@ public class AutomatonTest {
         Map<String, Map<String, String>> transitions = new HashMap<>();
         transitions.put("A", mapA);
     
-        Automaton automaton = new Automaton(states, alphabet, transitions, "A", endingStates);
+        Automata automaton = new Automata(states, alphabet, transitions, "A", endingStates);
     
         ArrayList<String> validLanguage = new ArrayList<>(Arrays.asList("b", "ab", "ba", "baab"));
         
@@ -257,7 +257,7 @@ public class AutomatonTest {
         Map<String, Map<String, String>> transitions = new HashMap<>();
         transitions.put("A", mapA);
     
-        Automaton automaton = new Automaton(states, alphabet, transitions, "A", endingStates);
+        Automata automaton = new Automata(states, alphabet, transitions, "A", endingStates);
     
         ArrayList<String> invalidLanguage = new ArrayList<>(Collections.singletonList("a"));
         
@@ -290,7 +290,7 @@ public class AutomatonTest {
         ArrayList<String> endingStates = new ArrayList<>();
         endingStates.add("Q99");
     
-        Automaton automaton = new Automaton(states, alphabet, transitions, startingState, endingStates);
+        Automata automaton = new Automata(states, alphabet, transitions, startingState, endingStates);
     
         ArrayList<String> language = new ArrayList<>();
         for (int i = 0; i < 100000; i++) {

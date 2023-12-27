@@ -3,6 +3,7 @@ package UI;
 import javax.swing.*;
 
 import controller.Controller;
+import logic.Automata;
 
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -14,39 +15,84 @@ import java.util.Map;
 
 public class AutomatonInputGUI {
     private JFrame frame;
+    private JFrame startMenuFrame;
     private ArrayList<String> states = new ArrayList<>();
     private ArrayList<String> alphabet = new ArrayList<>();
     private Map<String, Map<String, String>> transitions = new HashMap<>();
     private String startingState = "";
     private ArrayList<String> endingStates = new ArrayList<>();
 
+
+    // Create labels and text fields for input
+    JLabel statesLabel = new JLabel("States (comma-separated):");
+    JTextField statesField = new JTextField();
+    JLabel alphabetLabel = new JLabel("Alphabet (comma-separated):");
+    JTextField alphabetField = new JTextField();
+    JLabel transitionsLabel = new JLabel("Transitions (comma-separated):");
+    JTextField transitionsField = new JTextField();
+    JLabel initialStateLabel = new JLabel("Initial State:");
+    JTextField initialStateField = new JTextField();
+    JLabel endingStatesLabel = new JLabel("Accepting States (comma-separated):");
+    JTextField endingStatesField = new JTextField();
+    JLabel languageLabel = new JLabel("Language (comma-separated):");
+    JTextField languageField = new JTextField();
+    JLabel regex = new JLabel("Regular Expression");
+    JTextField regexField = new JTextField();
+
+    // Buttons
+    JButton submitButton = new JButton("Submit");
+    JButton exitButton = new JButton("Exit");
+    JButton saveButton = new JButton("Save Automaton");
+    JButton deleButton = new JButton("Delete Automaton");
+    JButton displayAutomatesCreatedButton = new JButton("My automatons");
+    JButton notice = new JButton("Notice");
+
     public AutomatonInputGUI() {
+        startMenu();
+    }
+
+    public void startMenu() {
+        startMenuFrame = new JFrame("Main menu");
+        startMenuFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        startMenuFrame.setSize(400, 300);
+        startMenuFrame.setLayout(new GridLayout(3, 1));
+
+        JButton regexToAutomata = new JButton("Regex-To-Automata");
+        JButton languageRecon = new JButton("Language-Recognization");
+        JButton exit = new JButton("Exit");
+
+        regexToAutomata.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                startMenuFrame.setVisible(false);
+                regexMenu();
+            }
+        });
+
+        languageRecon.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                startMenuFrame.setVisible(false);
+                manageAutomata();
+            }
+        });
+
+        exit.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                System.exit(0);
+            }
+        });
+
+        startMenuFrame.add(regexToAutomata);
+        startMenuFrame.add(languageRecon);
+        startMenuFrame.add(exit);
+
+        startMenuFrame.setVisible(true);
+    }
+
+    public void manageAutomata() {
         frame = new JFrame("Finite Automaton Input");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setSize(400, 300);
-        frame.setLayout(new GridLayout(10, 2));
-
-        // Create labels and text fields for input
-        JLabel statesLabel = new JLabel("States (comma-separated):");
-        JTextField statesField = new JTextField();
-        JLabel alphabetLabel = new JLabel("Alphabet (comma-separated):");
-        JTextField alphabetField = new JTextField();
-        JLabel transitionsLabel = new JLabel("Transitions (comma-separated):");
-        JTextField transitionsField = new JTextField();
-        JLabel initialStateLabel = new JLabel("Initial State:");
-        JTextField initialStateField = new JTextField();
-        JLabel endingStatesLabel = new JLabel("Accepting States (comma-separated):");
-        JTextField endingStatesField = new JTextField();
-        JLabel languageLabel = new JLabel("Language (comma-separated):");
-        JTextField languageField = new JTextField();
-
-        // Buttons
-        JButton submitButton = new JButton("Submit");
-        JButton exitButton = new JButton("Exit");
-        JButton saveButton = new JButton("Save Automaton");
-        JButton deleButton = new JButton("Delete Automaton");
-        JButton displayAutomatesCreatedButton = new JButton("My automatons");
-        JButton exampleButton = new JButton("Example");
+        frame.setLayout(new GridLayout(12, 2));
 
         submitButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
@@ -75,15 +121,7 @@ public class AutomatonInputGUI {
                     // Display a message or process the automaton input as needed
                     String message = result ? "The automaton recongnize the language" : "The automaton doesn't recognize the language";
 
-                    JOptionPane.showMessageDialog(frame, message);
-
-                    // Clear the text fields
-                    /*statesField.setText("");
-                    alphabetField.setText("");
-                    transitionsField.setText("");
-                    initialStateField.setText("");
-                    endingStatesField.setText("");
-                    languageField.setText("");*/                    
+                    JOptionPane.showMessageDialog(frame, message);   
                 }
             }
         });
@@ -175,22 +213,29 @@ public class AutomatonInputGUI {
             }
         });
 
-        exampleButton.addActionListener(new ActionListener() {
+        notice.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e){
                 StringBuilder example = new StringBuilder();
 
-                example.append("** EXAMPLE OF INPUT **").append("\n")  
+                example.append("******** EXAMPLE OF INPUT ********").append("\n")  
                     .append("States:    A,B").append("\n")
                     .append("Alphabet:    a,b").append("\n")
                     .append("Transitions:    A,a,A,A,b,B,B,a,A,B,b,B").append("\n")
                     .append("Initial State:    A").append("\n")
                     .append("Accepting States:    B").append("\n")
                     .append("Language:    abbbab,babbaab").append("\n").append("\n")
-                    .append("Note: For the transitions 'A,b,B' for example, the first letter 'A' represent\nthe state that we are leaving, the letter 'b' represent the condition to go\nto the next state and the letter 'B' represent the arrival state.");
-                
+                    .append("Note: For the transitions 'A,b,B' for example, the first letter 'A' represent\n")
+                    .append("the state that we are leaving, the letter 'b' represent the condition to go\n")
+                    .append("to the next state and the letter 'B' represent the arrival state.");
+
+                example.append("\n\n");
+
+                example.append("******** How To Use ********").append("\n")
+                    .append("You must enter an automata or a regex to verify if a language is valid.").append("\n")
+                    .append("If you enter both, only the regex will be considerated.");
+
                 JOptionPane.showMessageDialog(frame, example.toString());
             }
-
         });
 
         // Add components to the frame
@@ -204,15 +249,36 @@ public class AutomatonInputGUI {
         frame.add(initialStateField);
         frame.add(endingStatesLabel);
         frame.add(endingStatesField);
+        frame.add(new JLabel("---------------------------------------------O"));
+        frame.add(new JLabel("R-----------------------------------------------"));
+        frame.add(regex);
+        frame.add(regexField);
+        frame.add(new JLabel("------------------------------------------------"));
+        frame.add(new JLabel("------------------------------------------------"));
         frame.add(languageLabel);
         frame.add(languageField);
         frame.add(submitButton);
-        frame.add(exampleButton);
+        frame.add(notice);
         frame.add(saveButton);
         frame.add(deleButton);
         frame.add(displayAutomatesCreatedButton);
         frame.add(exitButton);
 
         frame.setVisible(true);
+    }
+
+    // Convert an automata to a regex
+    public void manageRegex(String regexInput) {
+
+    }
+
+    public void regexMenu() {
+
+    }
+
+    // Convert a regex to an automata
+    public void convertRegex(String regexInput) {
+        String regex = String.join("", regexInput.split(" "));
+        
     }
 }

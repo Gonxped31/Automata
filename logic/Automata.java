@@ -2,7 +2,7 @@ package logic;
 import java.util.ArrayList;
 import java.util.Map;
 
-public class Automaton {
+public class Automata {
     
     private ArrayList<String> Q;
     private ArrayList<String> sigma;
@@ -10,7 +10,7 @@ public class Automaton {
     private String q_0;
     private ArrayList<String> F;
 
-    public Automaton(ArrayList<String> states, ArrayList<String> alphabet,
+    public Automata(ArrayList<String> states, ArrayList<String> alphabet,
                      Map<String, Map<String, String>> functions, String startingState, ArrayList<String> endingStates) {
 
         this.Q = states;

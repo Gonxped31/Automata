@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.Map;
 
 import database.DataBase;
-import logic.Automaton;
+import logic.Automata;
 
 
 public class Controller {
@@ -12,7 +12,7 @@ public class Controller {
      Map<String, Map<String, String>> functions, String startingState, ArrayList<String> endingStates,
       ArrayList<String> language){
 
-        Automaton automaton = new Automaton(states, alphabet, functions, startingState, endingStates);
+        Automata automaton = new Automata(states, alphabet, functions, startingState, endingStates);
 
         return automaton.recognize(language);
     }
@@ -20,7 +20,7 @@ public class Controller {
     public static String saveAutomate(ArrayList<String> states, ArrayList<String> alphabet,
      Map<String, Map<String, String>> functions, String startingState, ArrayList<String> endingStates, String automateName){
 
-        Automaton automaton = new Automaton(states, alphabet, functions, startingState, endingStates);
+        Automata automaton = new Automata(states, alphabet, functions, startingState, endingStates);
         return DataBase.saveAutomate(automateName, automaton);
     }
 

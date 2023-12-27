@@ -13,7 +13,7 @@ import UI.AutomatonInputGUI;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 
-import logic.Automaton;
+import logic.Automata;
 
 public class DataBase {
 
@@ -49,7 +49,7 @@ public class DataBase {
         return connection;
     }
 
-    public static String saveAutomate(String automName, Automaton automaton){
+    public static String saveAutomate(String automName, Automata automaton){
         
         // Table colums SQL statement
         StringBuilder createTableSql = new StringBuilder();
