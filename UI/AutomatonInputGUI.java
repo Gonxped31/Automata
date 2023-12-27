@@ -36,7 +36,7 @@ public class AutomatonInputGUI {
     JTextField endingStatesField = new JTextField();
     JLabel languageLabel = new JLabel("Language (comma-separated):");
     JTextField languageField = new JTextField();
-    JLabel regex = new JLabel("Regular Expression");
+    JLabel regex = new JLabel("Regular Expression (Not Working)");
     JTextField regexField = new JTextField();
 
     // Buttons
@@ -63,13 +63,15 @@ public class AutomatonInputGUI {
 
         regexToAutomata.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                startMenuFrame.setVisible(false);
-                regexMenu();
+                JOptionPane.showMessageDialog(startMenuFrame, "This feature is not available yet.");
+                //startMenuFrame.setVisible(false);
+                //regexMenu();
             }
         });
 
         languageRecon.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
+                JOptionPane.showMessageDialog(startMenuFrame, "The regular expression field is not operational yet.");
                 startMenuFrame.setVisible(false);
                 manageAutomata();
             }
