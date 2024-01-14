@@ -36,7 +36,7 @@ public class AutomatonInputGUI {
     JTextField endingStatesField = new JTextField();
     JLabel languageLabel = new JLabel("Language (comma-separated):");
     JTextField languageField = new JTextField();
-    JLabel regex = new JLabel("Regular Expression (Not Working)");
+    JLabel regexLabel = new JLabel("Regular Expression (Not Working)");
     JTextField regexField = new JTextField();
 
     // Buttons
@@ -99,31 +99,36 @@ public class AutomatonInputGUI {
         submitButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 // Parse input and populate the automaton properties
-                states = new ArrayList<>(Arrays.asList(statesField.getText().split(",")));
-                alphabet = new ArrayList<>(Arrays.asList(alphabetField.getText().split(",")));
-                String[] transitionsArray = transitionsField.getText().split(",");
-                if (transitionsArray.length >=3 ){
-                    for (int i = 0; i < transitionsArray.length; i += 3) {
-                        transitions.computeIfAbsent(transitionsArray[i], k -> new HashMap<>()).put(transitionsArray[i + 1], transitionsArray[i + 2]);
+                if (regexLabel.getText().equals("")){
+                    states = new ArrayList<>(Arrays.asList(statesField.getText().split(",")));
+                    alphabet = new ArrayList<>(Arrays.asList(alphabetField.getText().split(",")));
+                    String[] transitionsArray = transitionsField.getText().split(",");
+                    if (transitionsArray.length >=3 ){
+                        for (int i = 0; i < transitionsArray.length; i += 3) {
+                            transitions.computeIfAbsent(transitionsArray[i], k -> new HashMap<>()).put(transitionsArray[i + 1], transitionsArray[i + 2]);
+                        }
+                    } else {
+                        transitions = new HashMap<>();
+                    }
+                    String[] validateStartingState = initialStateField.getText().split(",");
+                    if (validateStartingState.length > 1 || validateStartingState.length == 0 || states.isEmpty() || alphabet.isEmpty() || transitions.isEmpty()){
+                        JOptionPane.showMessageDialog(frame, "Your inputs are invalide.");
+                    } else {
+                        startingState = initialStateField.getText();
+                        endingStates = new ArrayList<>(Arrays.asList(endingStatesField.getText().split(",")));
+
+                        ArrayList<String> language = new ArrayList<>(Arrays.asList(languageField.getText().split(",")));
+
+                        boolean result = Controller.recognizeAutomate(states, alphabet, transitions, startingState, endingStates, language);
+
+                        // Display a message or process the automaton input as needed
+                        String message = result ? "The automaton recongnize the language" : "The automaton doesn't recognize the language";
+
+                        JOptionPane.showMessageDialog(frame, message);   
                     }
                 } else {
-                    transitions = new HashMap<>();
-                }
-                String[] validateStartingState = initialStateField.getText().split(",");
-                if (validateStartingState.length > 1 || validateStartingState.length == 0 || states.isEmpty() || alphabet.isEmpty() || transitions.isEmpty()){
-                    JOptionPane.showMessageDialog(frame, "Your inputs are invalide.");
-                } else {
-                    startingState = initialStateField.getText();
-                    endingStates = new ArrayList<>(Arrays.asList(endingStatesField.getText().split(",")));
+                    String regex = regexLabel.getText();
 
-                    ArrayList<String> language = new ArrayList<>(Arrays.asList(languageField.getText().split(",")));
-
-                    boolean result = Controller.recognizeAutomate(states, alphabet, transitions, startingState, endingStates, language);
-
-                    // Display a message or process the automaton input as needed
-                    String message = result ? "The automaton recongnize the language" : "The automaton doesn't recognize the language";
-
-                    JOptionPane.showMessageDialog(frame, message);   
                 }
             }
         });
@@ -253,7 +258,7 @@ public class AutomatonInputGUI {
         frame.add(endingStatesField);
         frame.add(new JLabel("---------------------------------------------O"));
         frame.add(new JLabel("R-----------------------------------------------"));
-        frame.add(regex);
+        frame.add(regexLabel);
         frame.add(regexField);
         frame.add(new JLabel("------------------------------------------------"));
         frame.add(new JLabel("------------------------------------------------"));
@@ -280,7 +285,7 @@ public class AutomatonInputGUI {
 
     // Convert a regex to an automata
     public void convertRegex(String regexInput) {
-        String regex = String.join("", regexInput.split(" "));
+        String cleanedRegex = String.join("", regexInput.split(" "));
         
     }
 }
